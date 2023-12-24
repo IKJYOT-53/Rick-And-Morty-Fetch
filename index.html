@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Rick and Morty</h1>
+    <button id="prev" class="hidden" onclick="previous()">Previous</button>
+    <button onclick="createUrl()" id="btn">Get Data</button>
+    <div id="data">
+    </div>
+    <script>
+        let page = 0;
+        let data = document.getElementById("data")
+        let btn = document.getElementById("btn")
+        let prev = document.getElementById("prev")
+        function previous(){
+            if(page>1){
+                data.innerHTML = ""
+                prev.innerText = `< ${page-1}`
+                btn.innerText = `${page+1} >`
+                page--;
+                let url = `https://rickandmortyapi.com/api/character?page=${page}`;
+                getData(url);
+            }else{
+                prev.setAttribute("class","hidden")
+            }
+        }
+        function createUrl(){
+            if(page>=1){
+                prev.removeAttribute("class")
+            }
+                data.innerHTML = ""
+                page++;
+                prev.innerText = `< ${page-1}`;
+                btn.innerText=`${page+1} >`;
+                let url = `https://rickandmortyapi.com/api/character?page=${page}`;
+                getData(url);
+        }
+        function getData(url){
+            fetch(url).then(result => {
+                    return result.json()
+            }).then(res => {
+                if(res.error){
+                    alert("No More Characters")
+                }else{
+
+                
+                console.log(res)
+                res.results.map(character => {
+                    let name = document.createElement("h5")
+                    let gender = document.createElement("p")
+                    let species = document.createElement("p")
+                    let status = document.createElement("p")
+                    let origin = document.createElement("p")
+                    let image = document.createElement("img")
+                    let parent = document.createElement("div")
+                    let sideDiv = document.createElement("div")
+                    parent.setAttribute("class","parent")
+                    sideDiv.setAttribute("class","side")
+                    name.innerText = character.name;
+                    gender.innerText = character.gender
+                    species.innerText = character.species
+                    status.innerText = character.status
+                    origin.innerText = character.origin.name 
+                    image.src = character.image
+                    parent.appendChild(image)
+                    sideDiv.appendChild(name)
+                    sideDiv.appendChild(origin)
+                    sideDiv.appendChild(species)
+                    sideDiv.appendChild(gender)
+                    sideDiv.appendChild(status)
+                    parent.appendChild(sideDiv)
+                    data.appendChild(parent)
+                    
+                })
+            }
+            })
+        }
+    </script>
+</body>
+</html>
